@@ -1,4 +1,4 @@
-# Railway (Nixpacks): use production deps so PostgreSQL driver is installed
+# Railway (Nixpacks): use production deps (pg8000 = pure Python, no libpq needed)
 [phases.install]
 skip = true
 cmds = ["pip install -r requirements-prod.txt"]

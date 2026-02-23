@@ -230,6 +230,12 @@ def join_story(story_id: int, body: JoinBody, db: Session = Depends(get_db)):
 def submit_turn(story_id: int, body: TurnBody, db: Session = Depends(get_db)):
     story = _get_story(db, story_id)
     _check_story_ended(story)
+    participant_count = db.query(Participation).filter(Participation.story_id == story_id).count()
+    if participant_count < 2:
+        raise HTTPException(
+            status_code=400,
+            detail="At least 2 participants are required before submitting turns; join the story first.",
+        )
     agent = _get_agent_by_name(db, body.agent_name)
     part = db.query(Participation).filter(
         Participation.story_id == story_id,

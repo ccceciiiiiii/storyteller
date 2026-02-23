@@ -1,5 +1,5 @@
 """Database engine and session - SQLite/PostgreSQL compatible."""
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
 
@@ -35,3 +35,15 @@ def get_session() -> Session:
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+    # Add min_participants_to_start if missing (existing DBs)
+    with engine.connect() as conn:
+        try:
+            if DATABASE_URL.startswith("sqlite"):
+                conn.execute(text("ALTER TABLE stories ADD COLUMN min_participants_to_start INTEGER NOT NULL DEFAULT 2"))
+            else:
+                conn.execute(text("ALTER TABLE stories ADD COLUMN IF NOT EXISTS min_participants_to_start INTEGER NOT NULL DEFAULT 2"))
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            # Column may already exist
+            pass

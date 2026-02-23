@@ -41,6 +41,7 @@ class Story(Base):
     max_rounds = Column(Integer, default=10, nullable=False)
     current_round = Column(Integer, default=0, nullable=False)
     max_participants = Column(Integer, default=5, nullable=False)
+    min_participants_to_start = Column(Integer, default=2, nullable=False)  # no turn accepted until this many have joined
     winner_agent_id = Column(Integer, ForeignKey("agents.id"), nullable=True)
     judge_method = Column(SQLEnum(JudgeMethod), default=JudgeMethod.keyword, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)

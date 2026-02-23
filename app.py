@@ -25,8 +25,14 @@ from judge.scoring import count_sentences
 
 
 def _random_title() -> str:
-    words = ["The", "Secret", "Last", "Dark", "Echo", "Shadow", "Lost", "Final", "Silent", "Hidden", "Mystery", "Quest"]
-    return " ".join(random.sample(words, min(3, len(words)))) + " " + "".join(random.choices(string.digits, k=2))
+    words = [
+        "The", "Secret", "Last", "Dark", "Echo", "Shadow", "Lost", "Final", "Silent", "Hidden",
+        "Mystery", "Quest", "Empty", "Broken", "Twilight", "Winter", "Summer", "Crimson", "Silver",
+        "Midnight", "First", "Second", "Ancient", "Forgotten", "Strange", "Quiet", "Bitter",
+    ]
+    chosen = random.sample(words, min(3, len(words)))
+    suffix = "".join(random.choices(string.ascii_lowercase + string.digits, k=4))
+    return " ".join(chosen) + " " + suffix
 
 
 def _random_seed() -> str:
@@ -34,6 +40,18 @@ def _random_seed() -> str:
         "The old house at the end of the street had been empty for years. Nobody dared to go inside.",
         "She found the letter under the floorboard. The handwriting was unmistakable.",
         "The carnival arrived at midnight. By morning, everything had changed.",
+        "In the attic, a single light flickered. Someone was still awake.",
+        "The train left the station without him. He watched it disappear into the fog.",
+        "Three knocks on the door. She had been expecting someone else.",
+        "The garden had grown wild over the summer. Something moved between the roses.",
+        "He woke to the sound of rain. The letter on the desk was unopened.",
+        "The key did not fit the lock. It had worked yesterday.",
+        "At the edge of the forest, the path split in two. Neither looked safe.",
+        "The photograph was face-down on the table. She had not turned it over yet.",
+        "By the time they reached the shore, the boat was gone. So was the captain.",
+        "The clock struck thirteen. Nobody in the room seemed to notice.",
+        "She had promised to meet him at noon. The square was empty.",
+        "The last page of the diary was torn out. The pen lay beside it.",
     ]
     return random.choice(seeds)
 
@@ -79,6 +97,7 @@ class StoryCreate(BaseModel):
     title: Optional[str] = None
     max_rounds: int = Field(default=10, ge=1, le=100)
     max_participants: int = Field(default=5, ge=2, le=20)
+    min_participants_to_start: int = Field(default=2, ge=2, le=20, description="Min participants required before any turn is accepted; gives time for more agents to join.")
 
 
 class StoryOut(BaseModel):
@@ -89,6 +108,7 @@ class StoryOut(BaseModel):
     max_rounds: int
     current_round: int
     max_participants: int
+    min_participants_to_start: int
     winner_agent_id: Optional[int]
     judge_method: str
     created_at: datetime
@@ -167,16 +187,28 @@ def list_agents(db: Session = Depends(get_db)):
 
 
 # ---------- API: Stories ----------
+# Treat empty or generic placeholder title as "no title" so we generate a unique one
+def _effective_title(requested: Optional[str]) -> str:
+    if not requested or not requested.strip():
+        return _random_title()
+    if requested.strip().lower() in ("open story", "open", "untitled"):
+        return _random_title()
+    return requested.strip()
+
+
 @app.post("/api/stories", response_model=StoryOut)
 def create_story(body: StoryCreate, db: Session = Depends(get_db)):
-    title = body.title or _random_title()
+    title = _effective_title(body.title)
     seed_text = _random_seed()
+    min_start = min(body.min_participants_to_start, body.max_participants)
+    min_start = max(2, min_start)
     story = Story(
         title=title,
         seed_text=seed_text,
         status=StoryStatus.open,
         max_rounds=body.max_rounds,
         max_participants=body.max_participants,
+        min_participants_to_start=min_start,
     )
     db.add(story)
     db.commit()
@@ -231,10 +263,11 @@ def submit_turn(story_id: int, body: TurnBody, db: Session = Depends(get_db)):
     story = _get_story(db, story_id)
     _check_story_ended(story)
     participant_count = db.query(Participation).filter(Participation.story_id == story_id).count()
-    if participant_count < 2:
+    min_required = getattr(story, "min_participants_to_start", 2)
+    if participant_count < min_required:
         raise HTTPException(
             status_code=400,
-            detail="At least 2 participants are required before submitting turns; join the story first.",
+            detail=f"At least {min_required} participants are required before submitting turns; currently {participant_count}. Join the story first or wait for more agents.",
         )
     agent = _get_agent_by_name(db, body.agent_name)
     part = db.query(Participation).filter(

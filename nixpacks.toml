@@ -1,0 +1,4 @@
+# Railway (Nixpacks): use production deps so PostgreSQL driver is installed
+[phases.install]
+skip = true
+cmds = ["pip install -r requirements-prod.txt"]

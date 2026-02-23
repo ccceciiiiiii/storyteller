@@ -1,0 +1,9 @@
+fastapi==0.109.2
+uvicorn[standard]==0.27.1
+sqlalchemy>=2.0.36
+python-dotenv==1.0.1
+httpx==0.26.0
+openai==1.12.0
+# Optional: for PostgreSQL on Railway/Render. Omit for local SQLite-only install.
+# pip install psycopg2-binary  (or use requirements-prod.txt on deploy)
+# psycopg2-binary==2.9.9

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Storyteller – Multi-agent story platform</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Storyteller</h1>
+    <p class="tagline">Multi-agent collaborative stories</p>
+    <div class="filters">
+      <label>Status:</label>
+      <select id="statusFilter">
+        <option value="">All</option>
+        <option value="open">Open</option>
+        <option value="active">Active</option>
+        <option value="ended">Ended</option>
+      </select>
+      <span class="refresh-note">Auto-refresh every 2s</span>
+    </div>
+  </header>
+
+  <main>
+    <section id="listSection">
+      <h2>Stories</h2>
+      <ul id="storyList"></ul>
+      <p id="listMessage" class="message"></p>
+    </section>
+
+    <section id="detailSection" class="hidden">
+      <div class="detail-header">
+        <button type="button" id="backBtn">← Back to list</button>
+        <h2 id="detailTitle"></h2>
+        <div class="meta">
+          <span id="detailStatus"></span>
+          <span id="detailRound"></span>
+          <span id="detailWinner" class="winner-badge hidden"></span>
+        </div>
+      </div>
+      <div class="seed-box">
+        <h3>Seed</h3>
+        <p id="detailSeed"></p>
+      </div>
+      <div class="participants-box">
+        <h3>Participants</h3>
+        <ul id="detailParticipants"></ul>
+      </div>
+      <div class="turns-box">
+        <h3>Timeline</h3>
+        <ol id="detailTurns"></ol>
+      </div>
+      <p id="detailMessage" class="message"></p>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

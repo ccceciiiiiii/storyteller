@@ -1,0 +1,24 @@
+# Render Blueprint: deploy Storyteller as a Web Service + PostgreSQL
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: storyteller
+    runtime: python
+    buildCommand: pip install -r requirements-prod.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: storyteller-db
+          property: connectionString
+      # Optional: enable OpenAI judge
+      # - key: JUDGE_PROVIDER
+      #   value: openai
+      # - key: OPENAI_API_KEY
+      #   sync: false
+
+databases:
+  - name: storyteller-db
+    plan: free
+    databaseName: storyteller
+    user: storyteller

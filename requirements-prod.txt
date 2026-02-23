@@ -1,0 +1,4 @@
+# Production: use with PostgreSQL on Railway/Render.
+# Install: pip install -r requirements-prod.txt
+-r requirements.txt
+psycopg2-binary==2.9.9

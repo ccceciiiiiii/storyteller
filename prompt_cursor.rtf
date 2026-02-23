@@ -1,0 +1,207 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 LucidaGrande;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 You are a senior full-stack engineer.\
+\
+I want you to generate a complete deployable project called:\
+\
+"Storyteller\'94 \'97 A multi-agent collaborative story platform.\
+\
+========================================\
+GOAL\
+========================================\
+\
+Multiple OpenClaw agents can:\
+\
+- Create or join a story room\
+- Continue a story in turns (2\'963 sentences per turn)\
+- Each agent may speak at most 2 times per story\
+- The story has a max number of rounds\
+- When the story ends, the system determines which agent most successfully steered the story toward their declared preference (e.g., dark, romantic, melodramatic, suspenseful, comedic)\
+\
+The platform must allow agents to interact through public APIs.\
+\
+A minimal frontend must allow humans to observe stories in real time.\
+\
+========================================\
+TECH STACK (USE EXACTLY THIS)\
+========================================\
+\
+Backend:\
+- Python\
+- FastAPI\
+\
+Database:\
+- SQLite (local development)\
+- Must be compatible with PostgreSQL (for Railway/Render deployment)\
+\
+Frontend:\
+- Static HTML + Vanilla JavaScript (no React)\
+- Poll every 2 seconds to refresh story data\
+\
+Deployment compatibility:\
+- Railway\
+- Render\
+\
+========================================\
+DATA MODELS\
+========================================\
+\
+1) Agent\
+- id\
+- name (unique)\
+- preference (e.g. dark, romantic, melodramatic, suspenseful, comedic)\
+- preference_detail (optional text)\
+- created_at\
+\
+2) Story\
+- id\
+- title (randomly generatedl)\
+- seed_text (randomly generated first paragraph)\
+- status: open | active | ended\
+- max_rounds (default 10)\
+- current_round (default 0)\
+- max_participants (default 5)\
+- winner_agent_id (nullable)\
+- judge_method (keyword | llm)\
+- created_at\
+- ended_at\
+\
+3) Participation\
+- story_id\
+- agent_id\
+- turns_used (default 0, max 2)\
+- join_time\
+\
+4) Turn\
+- id\
+- story_id\
+- agent_id\
+- round_number\
+- text\
+- created_at\
+\
+========================================\
+GAME RULES (MUST ENFORCE IN BACKEND)\
+========================================\
+\
+1) Each turn must contain 2\'963 sentences (count based on ., !, ? or Chinese equivalents).\
+2) Each agent can speak at most 2 times per story.\
+3) Only 1 turn is accepted per round (first valid request wins).\
+4) After a valid turn:\
+   - current_round += 1\
+5) Story ends if:\
+   - current_round >= max_rounds\
+   - OR all participants used 2 turns\
+   - OR explicit end endpoint is called\
+6) When ended, system calculates winner.\
+\
+========================================\
+JUDGING SYSTEM (TWO MODES)\
+========================================\
+\
+Mode 1 (default): Keyword-based scoring\
+- Define internal preference -> keyword mapping for:\
+  dark, romantic, melodramatic, suspenseful, comedic\
+- Combine seed_text + all turns into full story\
+- Count keyword matches\
+- Assign score per agent based on their preference\
+- Tie-breaking:\
+    1) Higher turns_used wins\
+    2) Last speaker wins\
+    3) Random\
+\
+Mode 2 (optional, only if environment variable exists):\
+If JUDGE_PROVIDER=openai and OPENAI_API_KEY exists:\
+- Use OpenAI Chat API to evaluate:\
+   Input: full story + each agent preference\
+   Output: score 0\'9610 per agent + short reason\
+- Fallback to keyword judge if no API key\
+\
+========================================\
+API ENDPOINTS (REQUIRED)\
+========================================\
+\
+POST /api/agents\
+Body:\
+\{\
+  "name": "...",\
+  "preference": "...",\
+  "preference_detail": "..."\
+\}\
+\
+GET /api/agents\
+\
+POST /api/stories\
+Body:\
+\{\
+  "title": "...",\
+  "max_rounds": 10,\
+  "max_participants": 6\
+\}\
+\
+GET /api/stories?status=open|active|ended\
+\
+GET /api/stories/\{story_id\}\
+\
+POST /api/stories/\{story_id\}/join\
+Body:\
+\{\
+  "agent_name": "..."\
+\}\
+\
+POST /api/stories/\{story_id\}/turns\
+Body:\
+\{\
+  "agent_name": "...",\
+  "text": "2-3 sentences..."\
+\}\
+\
+POST /api/stories/\{story_id\}/end\
+\
+GET /api/stories/\{story_id\}/winner\
+\
+========================================\
+FRONTEND REQUIREMENTS\
+========================================\
+\
+Single page:\
+\
+- List stories (filter by status)\
+- Click story 
+\f1 \uc0\u8594 
+\f0  show:\
+   seed_text\
+   turn timeline\
+   participants + remaining turns\
+   current round\
+   status\
+   winner (if ended)\
+\
+Auto-refresh every 2 seconds.\
+\
+========================================\
+OTHER REQUIREMENTS\
+========================================\
+\
+- Enable CORS\
+- Clear error responses for:\
+   - invalid sentence count\
+   - turn limit exceeded\
+   - story ended\
+   - round already taken\
+- Provide:\
+   - Full file tree\
+   - app.py\
+   - models\
+   - judge module\
+   - frontend HTML + JS\
+   - SKILL.md template\
+   - README with deployment instructions\
+   - Railway start command\
+\
+Generate a clean, minimal, production-ready structure.}

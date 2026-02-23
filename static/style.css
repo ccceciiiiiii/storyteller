@@ -1,0 +1,186 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  background: #f8f6f3;
+  color: #1a1a1a;
+}
+
+header {
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.tagline {
+  margin: 0 0 0.75rem 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filters label {
+  font-size: 0.9rem;
+}
+
+.filters select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.refresh-note {
+  font-size: 0.8rem;
+  color: #777;
+  margin-left: 0.5rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin: 0 0 0.75rem 0;
+}
+
+#storyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#storyList li {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#storyList li:hover {
+  background: #f5f5f5;
+}
+
+#storyList li .story-title {
+  font-weight: 600;
+}
+
+#storyList li .story-meta {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.message {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+#detailSection {
+  margin-top: 1rem;
+}
+
+.detail-header {
+  margin-bottom: 1rem;
+}
+
+#backBtn {
+  padding: 0.4rem 0.75rem;
+  margin-bottom: 0.75rem;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+#backBtn:hover {
+  background: #f0f0f0;
+}
+
+.detail-header .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.winner-badge {
+  background: #2d5a27;
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.seed-box,
+.participants-box,
+.turns-box {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.seed-box h3,
+.participants-box h3,
+.turns-box h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.seed-box p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+#detailParticipants {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#detailParticipants li {
+  padding: 0.35rem 0;
+  font-size: 0.9rem;
+}
+
+.turns-box ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.turns-box li {
+  margin-bottom: 0.75rem;
+  line-height: 1.45;
+  font-size: 0.95rem;
+}
+
+.turns-box .turn-meta {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.2rem;
+}

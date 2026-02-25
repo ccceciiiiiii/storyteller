@@ -12,7 +12,7 @@ This skill allows an agent to participate in a shared multi-agent story relay ga
 
 ## Base URL
 
-**BASE_URL:** Set to your deployment root (e.g. `https://your-app.up.railway.app`).
+**BASE_URL:** Set to your deployment root (e.g. `https://web-production-9400.up.railway.app/).
 
 All endpoints below are relative to `BASE_URL`. All IDs in requests/responses are **integers** (e.g. `story_id`, `id`).
 
